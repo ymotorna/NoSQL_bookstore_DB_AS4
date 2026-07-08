@@ -35,3 +35,8 @@ assignment/
 
 ## Notes
 - The **bonus task** (Redis Sorted Set leaderboard, `sales_leaderboard`) was **not completed** in this submission.
+
+
+## References
+
+- [Claude.ai](https://claude.ai/share/0570e586-0c4c-4f69-a084-da11f44cedb4)
