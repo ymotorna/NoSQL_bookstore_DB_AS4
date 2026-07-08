@@ -1,0 +1,127 @@
+#  +new container
+docker run -d --name redis-nosql-hw -p 6380:6379 redis
+
+#  run container
+docker exec -it redis-nosql-hw redis-cli
+
+
+
+
+# Task 1. String Operations ------------------------------------------------------------------
+
+#  +str
+SET product:1:name "Laptop"
+SET product:1:price 120
+SET product:1:category "Electronics"
+
+#  retrieve all
+MGET product:1:name product:1:price product:1:category
+
+
+#  Task 2. Hash Operations ------------------------------------------------------------------
+
+#  +prod hash
+HSET product:2 name 'Wireless Mouse' price 45 category 'Electronics' stock 15
+
+#  retrieve fields
+HGETALL product:2
+
+
+
+#  Task 3. List Operations ------------------------------------------------------------------
+
+#  +list w/ order ids
+RPUSH recent_orders 'order1' 'order2' 'order3' 'order4' 'order5' 'order6' 'order7' 'order8' 'order9' 'order10'
+
+#  retrieve all
+LRANGE recent_orders 0 -1
+
+#  retreive last 3
+LRANGE recent_orders -3 -1
+
+
+
+#  Task 4. Set Operations ------------------------------------------------------------------
+
+#  +set w/ tags
+SADD product_tags 'wireless' "portable" "bestseller" "electronics" "gift" "durable" "compact" "black"
+
+# Duplicate prevention
+SADD product_tags 'wireless'
+# => 0 == no new vals added
+SMEMBERS product_tags
+# => no duplicated vals
+
+# Membership check using SISMEMBER  \\  =is in set
+SISMEMBER product_tags 'wireless'
+# => 1 == exist
+SISMEMBER product_tags 'free'
+# => 0 == dont exist
+
+
+
+#  Task 5. Expiration (TTL) ------------------------------------------------------------------
+
+# +prod
+SET featured_product 'Wireless Headphones' EX 60
+
+# Remaining TTL  \\  check time till expired
+TTL featured_product          # if -2  => expired
+
+# Automatic expiration  \\ check existance
+GET featured_product       # if (nil)  => expired
+
+
+
+#  Task 6. Cache Simulation ------------------------------------------------------------------
+
+#  +prod hash
+HSET cache:product:1001 name 'Wireless Keyboard' price 75 category 'Electronics' stock 200
+
+# Set expiration to 120 sec
+EXPIRE cache:product:1001 120
+
+# Retrieve cached value
+HGETALL cache:product:1001
+
+# Verify expiration time
+TTL cache:product:1001
+
+
+
+-- for notes --------------------------------------------------------------------------------
+1. String Operations
+create simple key-value pair
+<screenshot>
+
+2. Hash Operations
+key - many values
+use when many attributes are related to 1 object
+<screenshot>
+
+3. List Operations
+key - ordered seq of vals
+use when order matters (queues, timestamps)
+<screenshot>
+
+4. Set Operations
+key - many unique vals (unordered)
+use to avoid duplicates + when order doesnt matter (tags, categories)
+<screenshot>
+
+5. Expiration (TTL)
+create temporary variables with set expiration time to be auto-deleted
+use to avoid cluttering of irrelevant data
+<screenshot>
+
+6. Cache Simulation
+use expiration mechanism to simulate data caching (temporary data storage in Redis memory)
+    => retrieve data from memory instead of calling primary db => faster
+    => auto-delete after set amount of time => no cluttering
+<screenshot>
+
+
+
+
+
+
